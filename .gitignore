@@ -1,0 +1,14 @@
+# Büyük yapısal veriler DVC ile takip edilecek, git ile değil
+data/raw_structures/*.pdb
+data/raw_structures/*.cif
+data/prepared_receptors/*.pdbqt
+docking/autodock/*.dlg
+docking/autodock/*.pdbqt
+
+# Python
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# OS
+.DS_Store
