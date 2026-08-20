@@ -1,46 +1,44 @@
 # Investigation of Selectivity with Local Frustration at Atomic Resolution
 
-Bu repo, Chen et al. 2020 (*Surveying biomolecular frustration at atomic resolution*,
-Nat Commun 11:5944) makalesinin COX-1/COX-2 selektivite bulgusunu (Figure 6, "Ligand
-binding specificity correlates with minimal frustration" bölümü) `atomfrust`
-pipeline'ı ile bağımsız olarak replike etmeyi amaçlar.
+This repository aims to independently replicate the COX-1/COX-2 selectivity finding
+reported by Chen et al. 2020 (*Surveying biomolecular frustration at atomic resolution*,
+Nat Commun 11:5944), specifically Figure 6 and the "Ligand binding specificity correlates
+with minimal frustration" section, using the `atomfrust` pipeline.
 
-## Arka plan
+## Background
 
-Makale, 54 COX inhibitörünü (35 COX-2-selektif, 19 non-selektif) hem COX-1 hem
-COX-2 yapısına dock edip, minimal frustre kontak sayısındaki farkın (COX-2 − COX-1)
-selektiviteyle ilişkili olduğunu gösteriyor (selektif ilaçlarda ortalama +3.5,
-non-selektiflerde ~0).
+The study docked 54 COX inhibitors (35 COX-2-selective and 19 non-selective) into both
+COX-1 and COX-2 structures and showed that the difference in the number of minimally
+frustrated contacts (COX-2 − COX-1) was associated with selectivity (an average of +3.5
+for selective drugs and approximately 0 for non-selective drugs).
 
-## Referans reseptör yapıları
+## Reference receptor structures
 
-| Enzim | PDB ID | Organizma | Çözünürlük | Not |
+| Enzyme | PDB ID | Organism | Resolution | Note |
 |---|---|---|---|---|
-| COX-1 | 1CQE | *Ovis aries* (koyun) | 3.10 Å | Flurbiprofen bağlı (docking için çıkarılacak), HEM kofaktörü korunuyor |
-| COX-2 | 1CX2 | *Mus musculus* (fare) | 2.5–3.0 Å | SC-558 bağlı (docking için çıkarılacak), HEM kofaktörü korunuyor |
+| COX-1 | 1CQE | *Ovis aries* (sheep) | 3.10 Å | Bound to flurbiprofen (to be removed for docking); the HEM cofactor is retained |
+| COX-2 | 1CX2 | *Mus musculus* (mouse) | 2.5–3.0 Å | Bound to SC-558 (to be removed for docking); the HEM cofactor is retained |
 
-Tür karışıklığı (koyun COX-1 + fare COX-2), COX docking literatüründe onlarca yıldır
-kullanılan bir standart kombinasyondur (bkz. Picot et al. 1994, Kurumbail et al. 1996);
-aktif site rezidüleri türler arası yüksek oranda korunmuştur.
+The use of structures from different species (sheep COX-1 + mouse COX-2) is a standard
+combination that has been used in the COX docking literature for decades (see Picot et al.
+1994 and Kurumbail et al. 1996); active-site residues are highly conserved across species.
 
-## Klasör yapısı
-
-```
+## Directory structure
 data/
-  raw_structures/       # RCSB'den indirilen ham PDB dosyaları (1CQE.pdb, 1CX2.pdb)
-  ligands/               # 54 inhibitörün SMILES/mol2/pdbqt dosyaları
-  prepared_receptors/    # Temizlenmiş, ligandı çıkarılmış, PDBQT'ye çevrilmiş reseptörler
+raw_structures/ # Raw PDB files downloaded from the RCSB PDB (1CQE.pdb, 1CX2.pdb)
+ligands/ # SMILES/mol2/pdbqt files for the 54 inhibitors
+prepared_receptors/ # Cleaned, ligand-removed receptors converted to PDBQT format
 docking/
-  autodock/              # AutoDock4 konfigürasyon dosyaları ve çıktıları
-scripts/                 # Hazırlık, docking, analiz scriptleri
-results/                 # Frustrasyon analizi sonuçları, tablolar, grafikler
-```
+autodock/ # AutoDock4 configuration files and outputs
+scripts/ # Preparation, docking, and analysis scripts
+results/ # Frustration analysis results, tables, and figures
 
-## İş akışı
+## Workflow
 
-1. Referans yapıları indir ve temizle (ligand/su/glikan çıkar, HEM koru)
-2. AutoDock4 için reseptör hazırlığı (prepare_receptor4.py)
-3. 54 ligandı hazırla (SMILES → 3D → PDBQT)
-4. Her ligandı hem 1CQE hem 1CX2'ye dock et (2000 pose, en düşük skorlu pose seçilir)
-5. En iyi pose'ları `atomfrust` pipeline'ına verip frustrasyon analizi çalıştır
-6. Minimal frustre kontak sayısını (COX-2 − COX-1) hesapla, selektivite ile karşılaştır
+1. Download and clean the reference structures (remove ligands/water/glycans, retain HEM)
+2. Prepare the receptors for AutoDock4 (`prepare_receptor4.py`)
+3. Prepare the 54 ligands (SMILES → 3D → PDBQT)
+4. Dock each ligand into both 1CQE and 1CX2 (2,000 poses; select the lowest-scoring pose)
+5. Submit the best poses to the `atomfrust` pipeline and run the frustration analysis
+6. Calculate the number of minimally frustrated contacts (COX-2 − COX-1) and compare
+   the difference with selectivity
